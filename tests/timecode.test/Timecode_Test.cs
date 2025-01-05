@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 using DotnetTimecode.Enums;
 
@@ -402,7 +403,72 @@ namespace DotnetTimecode.test
       var result = Timecode.ConvertFramerate("10:00:00:00", Enums.Framerate.fps23_976, Enums.Framerate.fps59_94_NDF);
       result.Should().Be("04:00:00:00");
     }
+    [Fact]
+    public void Timecode_InstanceEquals_OtherTimeCode()
+    {
+      // Arrange
+      var t1 = new Timecode(11, 11, 11, 0, Enums.Framerate.fps25);
+      var t2 = t1;
 
+      // Act
+      var result = t1 == t2;
+
+      // Assert
+      Assert.True(result);
+    }
+
+    [Fact]
+    public void Timecode_InstanceNotEquals_OtherTimeCode()
+    {
+      // Arrange
+      var t1 = new Timecode(11, 11, 11, 0, Enums.Framerate.fps29_97_NDF);
+      var t2 = new Timecode(11, 11, 11, 0, Enums.Framerate.fps29_97_NDF);
+
+      // Act
+      var result = t1 == t2;
+
+      // Assert
+      Assert.False(result);
+    }
+
+    [Fact]
+    public void Timecode_ValueEquals_OtherTimeCode()
+    {
+      // Arrange
+      var t1 = new Timecode(11, 11, 11, 0, Enums.Framerate.fps25);
+      var t2 = new Timecode(11, 11, 11, 0, Enums.Framerate.fps25);
+
+      // Act
+      var result = t1.Equals(t2);
+
+      // Assert
+      Assert.True(result);
+    }
+
+    [Fact]
+    public void Timecode_NotValueEquals_DifferentTimeCode()
+    {
+      // Arrange
+      var t1 = new Timecode(11, 11, 11, 0, Enums.Framerate.fps25);
+      var t2 = new Timecode(11, 11, 11, 1, Enums.Framerate.fps25);
+
+      // Act
+      var result = t1.Equals(t2);
+
+      // Assert
+      Assert.False(result);
+    }
+
+    [Fact]
+    public void Timecode_ValueEquals_ThrowsWhenDifferentFramerates()
+    {
+      // Arrange
+      var t1 = new Timecode(11, 11, 11, 0, Enums.Framerate.fps25);
+      var t2 = new Timecode(11, 11, 11, 0, Enums.Framerate.fps29_97_NDF);
+
+      // Assert
+      Assert.Throws<InvalidOperationException>(() => { t1.Equals(t2); });
+    }
     #endregion Public Static Methods
 
     #region Public Static Properties

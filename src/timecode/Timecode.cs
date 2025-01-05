@@ -49,6 +49,16 @@ namespace DotnetTimecode
     #endregion Public Properties
 
     #region Constructors
+    /// <summary>
+    /// Copy constructor
+    /// </summary>
+    /// <param name="timecode"></param>
+    public Timecode(Timecode timecode)
+    {
+        TotalFrames = timecode.TotalFrames;
+        Framerate = timecode.Framerate;
+        UpdateTimecodeHoursMinutesSecondsFrames();
+    }
 
     /// <summary>
     /// Creates a new Timecode object with timecode position 00:00:00:00.
@@ -128,7 +138,28 @@ namespace DotnetTimecode
         $":{AddZeroPadding(Second)}" +
         $"{lastColon}{AddZeroPadding(Frame)}";
     }
+    /// <summary>
+    /// Value comparison with another timecode object
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public override bool Equals(object? obj)
+    {
+      Timecode? timecode = obj as Timecode;
 
+      if (timecode is null) return false;
+      if (timecode.Framerate != Framerate) ThrowInvalidComparisonException();
+
+      return timecode.TotalFrames == TotalFrames;
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public override int GetHashCode()
+    {
+      return base.GetHashCode();
+    }
     /// <inheritdoc/>
     public void AddHours(int hoursToAdd)
     {
