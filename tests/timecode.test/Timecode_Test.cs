@@ -121,6 +121,21 @@ namespace DotnetTimecode.test
       act.Should().Throw<ArgumentException>();
     }
 
+    [Fact]
+    public void Constructor_CopyConstructor_DifferentInstance()
+    {
+      var originalTimecode = new Timecode("01:00:00:00", Enums.Framerate.fps24);
+      var _sut = new Timecode(originalTimecode);
+      Assert.True(originalTimecode != _sut);
+    }
+    [Fact]
+    public void Constructor_CopyConstructor_SameValue()
+    {
+      var originalTimecode = new Timecode("01:00:00:00", Enums.Framerate.fps24);
+      var _sut = new Timecode(originalTimecode);
+      Assert.True(originalTimecode.TotalFrames == _sut.TotalFrames);
+      Assert.True(originalTimecode.Framerate == _sut.Framerate);
+    }
     #endregion Constructors
 
     #region Public Methods
@@ -457,6 +472,28 @@ namespace DotnetTimecode.test
 
       // Assert
       Assert.False(result);
+    }
+
+    [Fact]
+    public void Timecode_ValueEquals_WithDefaultEqualityComparer()
+    {
+      // Arrange
+      var t1 = new Timecode(11, 11, 11, 0, Enums.Framerate.fps25);
+      var t2 = new Timecode(11, 11, 11, 0, Enums.Framerate.fps25);
+
+      // Assert
+      Assert.Equal(t1, t2);
+    }
+
+    [Fact]
+    public void Timecode_ValueNotEquals_WithDefaultEqualityComparer()
+    {
+      // Arrange
+      var t1 = new Timecode(11, 11, 11, 0, Enums.Framerate.fps25);
+      var t2 = new Timecode(11, 11, 11, 1, Enums.Framerate.fps25);
+
+      // Assert
+      Assert.NotEqual(t1, t2);
     }
 
     [Fact]
